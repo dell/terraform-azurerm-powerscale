@@ -107,7 +107,7 @@ resource "azurerm_network_interface" "azonefs_network_interface_internal" {
   }
 
   lifecycle {
-    ignore_changes    = [tags, ip_configuration]
+    ignore_changes = [tags, ip_configuration]
   }
 }
 
@@ -149,7 +149,7 @@ resource "azurerm_network_interface" "azonefs_network_interface_external" {
     }
   }
   lifecycle {
-    ignore_changes    = [tags, ip_configuration]
+    ignore_changes = [tags, ip_configuration]
   }
   # TODO: management secondary IPs when management subnet is added
 }
