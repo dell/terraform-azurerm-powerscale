@@ -105,6 +105,10 @@ resource "azurerm_network_interface" "azonefs_network_interface_internal" {
     private_ip_address_allocation = "Static"
     private_ip_address            = cidrhost(local.internal_prefix, count.index + var.addr_range_offset)
   }
+
+  lifecycle {
+    ignore_changes = [tags, ip_configuration]
+  }
 }
 
 resource "azurerm_network_interface_security_group_association" "azonefs_network_interface_internal_nsg_association" {
@@ -143,6 +147,9 @@ resource "azurerm_network_interface" "azonefs_network_interface_external" {
       private_ip_address            = ip_configuration.value
       primary                       = false
     }
+  }
+  lifecycle {
+    ignore_changes = [tags, ip_configuration]
   }
   # TODO: management secondary IPs when management subnet is added
 }
