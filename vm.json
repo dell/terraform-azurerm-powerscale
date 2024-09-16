@@ -69,14 +69,23 @@
         }
     },
     "variables": {
-        "managedDiskEncryption": {
+        "managedOSDiskEncryption": {
             "storageAccountType": "[parameters('os_disk_type')]",
             "diskEncryptionSet": {
                 "id": "[parameters('disk_encryption_set_id')]"
             }
         },
-        "managedDiskNoEncryption": {
+        "managedOSDiskNoEncryption": {
             "storageAccountType": "[parameters('os_disk_type')]"
+        },
+        "managedDataDiskEncryption": {
+            "storageAccountType": "[parameters('data_disk_type')]",
+            "diskEncryptionSet": {
+                "id": "[parameters('disk_encryption_set_id')]"
+            }
+        },
+        "managedDataDiskNoEncryption": {
+            "storageAccountType": "[parameters('data_disk_type')]"
         }
     },
     "resources": [
@@ -107,7 +116,7 @@
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "deleteOption" : "Delete",
-                        "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedDiskNoEncryption'), variables('managedDiskEncryption'))]"
+                        "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedOSDiskNoEncryption'), variables('managedOSDiskEncryption'))]"
                     },
                     "copy" : [
                         {
@@ -119,7 +128,7 @@
                                 "createOption": "Empty",
                                 "caching": "None",
                                 "deleteOption" : "Delete",
-                                "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedDiskNoEncryption'), variables('managedDiskEncryption'))]",
+                                "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedDataDiskNoEncryption'), variables('managedDataDiskEncryption'))]",
                                 "diskSizeGB": "[parameters('data_disk_size')]"
                             }
                         }
