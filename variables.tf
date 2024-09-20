@@ -209,3 +209,9 @@ variable "disk_encryption_set_resource_group" {
 }
 
 variable "subscription_id" {}
+
+variable "post_install_commands" {
+  description = "List of commands to run after the installation"
+  type        = list(string)
+  default     = []
+}

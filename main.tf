@@ -192,6 +192,7 @@ locals {
         hashed_admin_password    = var.hashed_root_passphrase,
         smartconnect_zone        = var.smartconnect_zone,
         join_mode                = var.join_mode,
+        post_install_commands    = length(var.post_install_commands) > 0 ? join(" ; ", var.post_install_commands) : "isi status"
       }
     )
   )
