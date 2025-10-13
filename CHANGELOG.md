@@ -1,4 +1,33 @@
-# v1.0.0 (TODO_PUT_DATE_HERE!)
+# v1.0.1 (2025-10-13)
+
+## Release Summary
+
+The release contains minor fixes and enhancements for the Terraform Module for Dell Technologies (Dell) PowerScale Cluster.
+
+## Features
+
+### Data Sources
+
+N/A
+
+### Resources
+
+N/A
+
+### Others
+
+N/A
+
+### Enhancements
+
+* Adds `post_install_commands` variable to allow for running a list of commands after the installation is complete.
+
+### Bug Fixes
+
+* Fixes a defect where `data_disk_type` variable was not being set properly.
+* Fixes a defect where manual network interface configurations may be overwritten when using the original terraform script to add more nodes.
+
+# v1.0.0 (2024-09-02)
 
 ## Release Summary
 

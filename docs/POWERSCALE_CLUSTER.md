@@ -150,6 +150,7 @@ In order to create a PowerScale cluster in the Azure Public Cloud, an administra
 | timezone | Default: "Greenwich Mean Time" | `string` | `"Greenwich Mean Time"` | no |
 | update_domain_count | Default: 20 | `number` | `20` | no |
 | use_disk_encryption | Description: Set to true to enable disk encryption using an existing disk encryption set | `bool` | `false` | no |
+| post_install_commands | Description: List of commands to run after the installation | `list` | `[]` | no |
 
 ## Outputs
 
