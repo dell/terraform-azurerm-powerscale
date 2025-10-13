@@ -1,0 +1,60 @@
+<!--
+
+        Copyright (c) 2024 Dell Inc. or its subsidiaries. All rights reserved.
+
+-->
+
+# Typical terraform.tfvars template file for the terraform-azurerm-powerscale module
+
+# Subscription
+subscription_id = "<azure_subsciption_id>"
+
+# Resource Group
+resource_group = <resource group name>
+
+# Cluster OS Information
+cluster_name           = "<cluster_name>"
+image_id               = "<vhd_image_id_with_location>"
+# Example: image_id    = "/subscriptions/<azure_subsciption_id>/resourceGroups/<powerscale_image_resource_group>/providers/Microsoft.Compute/images/<powerscale-release-build>"
+
+# Hashed Password (Default)
+# openssl passwd -5 -salt `head -c 8 /dev/random | xxd -p` "<replace-password-here>"
+default_hashed_password = "<default_hashed_password>"
+# Hashed Password with different root and admin (Optional)
+hashed_admin_passphrase = "<hashed_admin_passphrase>"
+hashed_root_passphrase = "<hashed_admin_passphrase>"
+
+
+# Cluster Scale
+node_size     = "Standard_D8ds_v4"
+cluster_nodes = 3
+max_num_nodes = 3
+
+# Networking Information
+smartconnect_zone        = "foo.bar"
+network_id               = "<vnet_including_location>"
+# Example: network_id    = "/subscriptions/<azure_subsciption_id>/resourceGroups/<vnet_resource_group>/providers/Microsoft.Network/virtualNetworks/<vnet_name>"
+addr_range_offset        = 5 # <---- Attention!  This is your starting IP range, make sure it is not conflict. (step by 5)
+external_subnet_name     = "<name_of_external_subnet>"
+internal_subnet_name     = "<name_of_internal_subnet>"
+
+data_disk_type           = "Premium_LRS"
+
+# Network Security Group
+internal_nsg_name = "<internal network security group>"
+internal_nsg_resource_group = "<interal network security resource group>"
+external_nsg_name = "<external network security group>"
+external_nsg_resource_group = "<external network security resource group>"
+
+# Storage Configuration
+os_disk_type        = "Premium_LRS"
+data_disk_size      = 12
+data_disks_per_node = 3
+
+# Disk Encryption Configuration
+use_disk_encryption                = <true|false>
+disk_encryption_set_name           = "<name of disk encryption set>"
+disk_encryption_set_resource_group = "<disk encryption set resource group>"
+
+# UserAssigned Managed Identity (optional)
+identity_list = ["<resource-id>"]

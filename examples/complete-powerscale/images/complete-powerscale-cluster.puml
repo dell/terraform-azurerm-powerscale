@@ -1,0 +1,19 @@
+@startuml complete-powerscale-cluster-sequence
+
+!theme bluegray
+
+actor Customer
+
+participant Terraform
+collections OneFS
+
+== Deploy Terraform Modules ==
+Customer -->o Terraform: Deploy Resource Group module
+Terraform -->o  Customer: Wait for terraform apply to complete
+Customer -->o  Terraform: Deploy Network Security Group module
+Terraform -->o  Customer: Wait for terraform apply to complete
+Customer ->o  Terraform: Deploy OneFS Module
+Terraform ->o  Customer: Wait for terraform apply to complete
+
+footer <font color=gray>Copyright (c) 2024 Dell Inc. or its subsidiaries. All rights reserved.
+@enduml
