@@ -1,0 +1,4 @@
+project_exclusion_list:
+    exclusion_file_paths:
+      - 'acs.tftpl'
+      - 'machineid.tftpl'

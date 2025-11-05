@@ -1,0 +1,8 @@
+*.tfvars
+*.tfstate*
+*.tfstate.*
+
+*.terraform*
+*.terraform.lock.hcl*
+.idea/
+.python-version

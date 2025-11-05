@@ -1,0 +1,181 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "type": "String"
+        },
+        "location": {
+            "type": "String",
+            "defaultValue" : "centralus"
+        },
+        "sku": {
+            "type": "String", 
+            "defaultValue" : "Standard_D8ds_v4"
+        },
+        "os_disk_type": {
+            "type": "String",
+            "defaultValue" : "Premium_LRS"
+        },
+        "data_disk_type": {
+            "type": "String",
+            "defaultValue" : "Premium_LRS"
+        },
+        "data_disk_size": {
+            "type": "int",
+            "defaultValue" : 12
+        },
+        "data_disk_count": {
+            "type": "int",
+            "defaultValue" : 3
+        },
+        "avset_id": {
+            "type": "String"
+        },
+        "ppg_id": {
+            "type": "String"
+        },
+        "image_id": {
+            "type": "String"
+        },
+        "user_data": {
+            "type": "String"
+        },
+        "internal_nic_id": {
+            "type": "String"
+        },
+        "external_nic_id": {
+            "type": "String"
+        },
+        "resourceTags": {
+            "type": "object",
+            "defaultValue": {}
+        },
+        "disk_encryption_set_id": {
+            "type": "String",
+            "defaultValue": "noencryption"
+        },
+        "admin_username": {
+            "type": "String",
+            "defaultValue": "azonefs"
+        },
+        "fake_ssh_public_key": {
+            "type": "securestring",
+            "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDM8FUTWREWGbWPSEADohwsFiBGG5a9hB4Bv2UjRqDuw59yjXrVQTbK5/a8BFJw8Anxlb23lCKvF3Vx7/O7jdWwonRDJy0+ow+SmW0GzgHyi2nZg4HtWdJ05YYCBqqbv5x16E7lFeapwZW8f2AqKsDVs3Y1QPry5gPaa8lt1vUEz/fxP7yzD7OBcF33AsoIH1Tbai4fuNVPLjQL21yaVe+DCxEFcpE3vi28kyimjsa0iXVo9JEPr/6HbXte2wR9SPBjki3Vimdnsq6Pn5Kbw4VX84FWv1LCsnYzBkavZPobE/lVYFGzBGCSr6UJ9xnNTm/lDVsd8nEghPXKEPSslIQEiKfUfeKpDVmTorHdsD0WetSlO/+KxDDmBVr4Ux4aharc7Lyn5RTw4Y8w+luuMBD8V2b6D4D1v8ZstjLuuUnO6ozdFy+bZ5Ks5tgKdF5buMCpONAnzfG+1WRkuTF/kiaLu+GwwD1uJ3OGo8TDPKFYNWhYjt0J9UNdnl2Gg/VF/gzm9xRdA5c0z6xnAoyBNi1IxiddeDe4Cw0q7tcEvfH5H+itqlXGmobj0teGgAUzV49YSH2rUhWFhslCiB9MV6kuFJdk3wkjczseo+QB19O66pPVoRqhNGijIB90+laKCWEnj7Xp6TdWaXdpQph18aTdVuZIVbwpo6rsQg7ih9nceQ== fake@user"
+        },
+        "identity" : {
+            "type" : "object",
+            "defaultValue" : {}
+        }
+    },
+    "variables": {
+        "managedOSDiskEncryption": {
+            "storageAccountType": "[parameters('os_disk_type')]",
+            "diskEncryptionSet": {
+                "id": "[parameters('disk_encryption_set_id')]"
+            }
+        },
+        "managedOSDiskNoEncryption": {
+            "storageAccountType": "[parameters('os_disk_type')]"
+        },
+        "managedDataDiskEncryption": {
+            "storageAccountType": "[parameters('data_disk_type')]",
+            "diskEncryptionSet": {
+                "id": "[parameters('disk_encryption_set_id')]"
+            }
+        },
+        "managedDataDiskNoEncryption": {
+            "storageAccountType": "[parameters('data_disk_type')]"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2022-08-01",
+            "name": "[parameters('name')]",
+            "location": "[parameters('location')]",
+            "identity" : "[parameters('identity')]",
+            "tags": "[parameters('resourceTags')]",
+            "properties": {
+                "availabilitySet": {
+                    "id": "[parameters('avset_id')]"
+                },
+                "proximityPlacementGroup": {
+                    "id": "[parameters('ppg_id')]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('sku')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "id": "[parameters('image_id')]"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "[format('{0}-osdisk', parameters('name'))]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "deleteOption" : "Delete",
+                        "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedOSDiskNoEncryption'), variables('managedOSDiskEncryption'))]"
+                    },
+                    "copy" : [
+                        {
+                            "name" : "dataDisks",
+                            "count" : "[parameters('data_disk_count')]",
+                            "input" : {
+                                "lun": "[copyIndex('dataDisks')]",
+                                "name": "[format('{0}-data-{1}', parameters('name'), copyIndex('dataDisks', 1))]",
+                                "createOption": "Empty",
+                                "caching": "None",
+                                "deleteOption" : "Delete",
+                                "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedDataDiskNoEncryption'), variables('managedDataDiskEncryption'))]",
+                                "diskSizeGB": "[parameters('data_disk_size')]"
+                            }
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('name')]",
+                    "adminUsername": "[parameters('admin_username')]",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "provisionVMAgent": false,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "[concat('/home/', parameters('admin_username'), '/.ssh/authorized_keys')]",
+                                    "keyData": "[parameters('fake_ssh_public_key')]"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "priority" : "Regular",
+                "userData" : "[parameters('user_data')]",
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[parameters('external_nic_id')]",
+                            "properties": {
+                                "primary": true,
+                                "deleteOption": "Detach"
+                            }
+                        },
+                        {
+                            "id": "[parameters('internal_nic_id')]",
+                            "properties": {
+                                "primary": false,
+                                "deleteOption": "Detach"
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
+        }
+    ]
+}
