@@ -1,0 +1,1 @@
+Currently, Dell does not allow contribution from external sources for this Terraform Module. For any request you can reach out to us using the channels as specified in [SUPPORT.md](SUPPORT.md).

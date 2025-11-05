@@ -1,0 +1,7 @@
+acs.tftpl
+docs
+example.tfvars
+machineid.tftpl
+main.tf
+variables.tf
+vm.json
