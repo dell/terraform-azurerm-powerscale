@@ -1,0 +1,59 @@
+<!--
+
+        Copyright (c) 2024 Dell Inc. or its subsidiaries. All rights reserved.
+
+-->
+
+# Typical terraform.tfvars template file for the terraform-azurerm-powerscale module
+
+# Subscription
+subscription_id         = "<Azure Subscription ID>"
+
+# Resource Group
+resource_group          = <Azure Resource Group Name>
+
+# PowerScale Cluster Information
+cluster_name            = "<PowerScale cluster name>"
+
+image_type              = "marketplace"
+# See marketplace_image in variables.tf for available plans
+marketplace             = "US"
+
+# To use a managed_image instead of marketplace image
+# image_type            = "managed_image"
+# image_id              = "<Resource ID of managed image in gallery or resource group>"
+
+# Hashed Password (Default)
+# openssl passwd -6 -salt `head -c 8 /dev/random | xxd -p` "<replace-password-here>"
+hashed_admin_passphrase = "<hashed_admin_passphrase>"
+hashed_root_passphrase  = "<hashed_root_passphrase>"
+
+
+# Cluster Scale (Optional)
+node_size               = "Standard_D32ds_v5"
+cluster_nodes           = 4
+max_num_nodes           = 4
+
+
+# Networking Information
+network_id              = "<Azure Virtual Network Resource ID>"
+# Example: network_id   = "/subscriptions/<azure_subsciption_id>/resourceGroups/<vnet_resource_group>/providers/Microsoft.Network/virtualNetworks/<vnet_name>"
+external_prefix         = "<Subnet Prefix in CIDR Notation>"
+external_subnet_id      = "<Azure External Subnet Resource ID>"
+internal_prefix         = "<Subnet Prefix in CIDR Notation>"
+internal_subnet_id      = "<Azure Internal Subnet Resource ID>"
+
+
+# Storage Configuration (optional)
+os_disk_type            = "Premium_LRS"
+data_disk_type          = "Standard_LRS"
+data_disk_size          = 512
+data_disks_per_node     = 6
+
+# Disk Encryption Configuration
+use_disk_encryption                = <true|false>
+disk_encryption_set_name           = "<name of disk encryption set>"
+disk_encryption_set_resource_group = "<disk encryption set resource group>"
+
+# UserAssigned Managed Identity (optional)
+identity_list = ["<resource-id>"]
