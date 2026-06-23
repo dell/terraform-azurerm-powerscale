@@ -1,0 +1,7 @@
+site_name: 'terraform-azurerm-powerscale'
+site_description: 'terraform-azurerm-powerscale Documentation.'
+docs_dir: docs
+plugins:
+  - techdocs-core
+theme:
+  name: material
